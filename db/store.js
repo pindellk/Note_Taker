@@ -1,8 +1,9 @@
+// Establish dependencies
 const util = require("util");
 const fs = require("fs");
 
 // Generate unique ids
-const uuidv1 = require("uuid/v1");
+const uuidv4 = require("uuid");
 
 const readFileAsync = util.promisify(fs.readFile);
 const writeFileAsync = util.promisify(fs.writeFile);
@@ -31,8 +32,7 @@ class Store {
     }
     
     addNote(note) {
-        return _________("db/db.json", JSON.stringify(note));
-
+        return fs.appendFile("db/db.json", JSON.stringify(note));    
     }
 }
 
