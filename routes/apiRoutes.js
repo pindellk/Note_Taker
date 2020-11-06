@@ -1,16 +1,27 @@
 // Establish dependencies
 const router = require("express").Router();
 const notes = require("../db/db");
+const uuidv4 = require("uuid");
 
 // GET `/api/notes` - reads the `db.json` file and returns all saved notes as JSON
 router.get('/api/notes', (req, res) => {        
     res.json(notes);
+    console.log(notes);
 })
 
 // POST `/api/notes` - receives a new note to save on the request body, 
 // adds it to the `db.json` file, and then return the new note to the client.
 router.post("/api/notes", (req, res) => {
-    let newNote = req.body;
+    const newNote = {
+        id: uuidv4(),
+        title: req.body.title,
+        text: req.body.text,
+    };
+    if (!newNote.title) {
+        return res.status(400).json({ msg: "Be sure to add your note!"});
+    }
+    notes.push(newNote);
+    res.json(notes);
 })
 
 // * DELETE `/api/notes/:id` - Should receive a query parameter containing the id of a note to delete
