@@ -1,12 +1,13 @@
 // Establish dependencies
 const router = require("express").Router();
-const notes = require("../db/db");
+
 const uuid = require("uuid");
+const Store = require("../db/store");
+const noteStore = new Store();
 
 // GET `/api/notes` - reads the `db.json` file and returns all saved notes as JSON
 router.get('/notes', (req, res) => {        
-    res.json(notes);
-    console.log(notes);
+    res.json(noteStore.read());
 })
 
 // POST `/api/notes` - receives a new note to save on the request body, 
