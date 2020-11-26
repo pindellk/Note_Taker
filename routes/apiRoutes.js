@@ -1,32 +1,19 @@
-// Establish dependencies
-const router = require("express").Router();
+// // Require express router dependency
+// const router = require("express").Router();
 
-const uuid = require("uuid");
-const Store = require("../db/store");
-const noteStore = new Store();
+// Require store class 
+const noteStore = require("../db/store");
 
-// GET `/api/notes` - reads the `db.json` file and returns all saved notes as JSON
-router.get('/notes', (req, res) => {        
-    res.json(noteStore.read());
-    res.json(noteStore.getNotes());
-})
+module.exports = function (app) {
 
-// POST `/api/notes` - receives a new note to save on the request body, 
-// adds it to the `db.json` file, and then return the new note to the client.
-router.post("/notes", (req, res) => {
-    const note = {
-        id: uuid.v4(),
-        title: req.body.title,
-        text: req.body.text,
-    };
-    noteStore.write(note);
-});
+    // GET request to display notes
+    app.get("/api/notes", noteStore.display);
 
-// * DELETE `/api/notes/:id` - Should receive a query parameter containing the id of a note to delete
-// In order to delete a note, you'll need to read all notes from the `db.json` file, remove the note with 
-// the given `id` property, and then rewrite the notes to the `db.json` file.
-// router.get("/api/nodes/:id", (req, res) => {
-//     res.json()
-// })
+    // POST request to add note
+    app.get("/api/notes", noteStore.add);
 
-module.exports = router;
+    // DELETE note based on id
+    app.delete("/api/notes/:id", noteStore.delete);
+}
+
+// module.exports = router;
