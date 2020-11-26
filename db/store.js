@@ -1,51 +1,42 @@
 // Establish dependencies
 const util = require("util");
 const fs = require("fs");
-
-// Generate unique ids
-const uuidv4 = require("uuid");
-
-const readFileAsync = util.promisify(fs.readFile);
 const writeFileAsync = util.promisify(fs.writeFile);
+const noteDb = require("../db/db.json");
 
-class Store {
-    read() {
-        return readFileAsync("./db/db.json", "utf8") 
-            .then((json) => {
-                return json;
-            })
-            .catch((err) => {
-                console.log("Error", err);
-            });
-    }
+// Require package for generating unique ids
+const uuid = require("uuid");
 
-    write(note) {
-        return writeFileAsync("./db/db.json", JSON.stringify(note))
-        .then((json) => {
-            return json;
-        })
-        .catch((err) => {
-            console.log("Error", err);
-        });
-    }
-
-    getNotes() {
-        return this.read().then((notes) => {
-            let parseNotes;
-
-            try {
-                parseNotes = [].concat(JSON.parse(notes));
-            } catch (err) {
-                parseNotes = [];
-            }
-
-            return parseNotes;
-        });
-    }
-    
-    // addNote(note) {
-    //     return fs.appendFile("db/db.json", JSON.stringify(note));    
-    // }
+exports.display = function (req, res) {
+    res.json(noteDb);
 }
 
-module.exports = Store;
+exports.add = (req, res) => {
+    const newNote = {
+        id: uuid.v4(),
+        title: req.body.title,
+        text: req.body.text,
+    };
+    noteDb.push(newNote);
+    writeFileAsync("./db/db.json", JSON.stringify(noteDb))
+        .then(() => {
+            console.log("Note database has been updated!")
+        })
+    console.log("New note has been added!");
+    res.json(noteDb);
+}
+
+exports.delete = (req, res) => {
+    const id = parseInt(req.params.id);
+    for (let i = 0; i < noteDb.length; i++) {
+        if (id === noteDb[i].id) {
+            noteDb.splice(i, 1);
+            let revisedDb = JSON.stringify(noteDb, null, 2);
+            writeFileAsync("./db/db.json", revisedDb)
+            .then(() => {
+                console.log("Note has been deleted")
+            });
+        }
+    }
+    res.json(noteDb);
+}
