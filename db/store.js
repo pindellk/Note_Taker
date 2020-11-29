@@ -8,6 +8,7 @@ const readFileAsync = util.promisify(fs.readFile);
 // Require package for generating unique ids
 const uuid = require("uuid");
 
+// View db contents
 exports.display = function (req, res) {
     return readFileAsync("./db.json", "utf8")
         .then((data) => {
@@ -15,44 +16,33 @@ exports.display = function (req, res) {
         });
 }
 
+// Add new note
 exports.add = (req, res) => {
     const newNote = {
         id: uuid.v4(),
         title: req.body.title,
         text: req.body.text,
     };
-    // readFileAsync("./db.json", "utf8")
-    //     .then((data) => {
-    //         let notes = JSON.parse(data);
-    //         notes.push(newNote);
-    //         writeFileAsync("./db.json", JSON.stringify(notes))
-    //             .catch(err => console.error(err));
-    //     })
 
     updateDb("./db.json", data => {
         let notes = JSON.parse(data);
         notes.push(newNote);
         return notes;
-    })
+    });
 };
 
+// Delete a note
 exports.delete = (req, res) => {
     const id = req.params.id;
-    // readFileAsync("./db.json", "utf8")
-    //     .then((data) => {
-    //         let notes = JSON.parse(data);
-    //         notes = notes.filter(note => id !== note.id);
-    //         writeFileAsync("./db.json", JSON.stringify(notes));
-    //     })
-    //     .catch(err => console.error(err));
 
-    updateDb('./db.json', data => {
+    updateDb("./db.json", data => {
         let notes = JSON.parse(data);
         notes = notes.filter(note => note.id !== id);
         return notes;
-    })
+    });
 }
 
+// Handle readFileAsync and writeFileAsync for writing and deleting
 const updateDb = (db, callback) => {
     readFileAsync(db, 'utf8')
         .then(callback)
