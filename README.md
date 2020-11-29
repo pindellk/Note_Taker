@@ -28,7 +28,7 @@ npm install
 
 ## Usage
 
-This app is free to use for anyone. Link to deployed application:
+This app is free to use for anyone. Link to deployed application: https://intense-bayou-94412.herokuapp.com/.
 
 ## License
 
