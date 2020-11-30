@@ -4,6 +4,8 @@
 
 Write, save and delete notes on this app.
 
+![Image](./public/assets/note-taker-screenshot.png)
+
 ## Table of Contents 
 
 * [Installation](#installation)
@@ -20,7 +22,7 @@ Write, save and delete notes on this app.
 
 ## Installation
 
-To install necessary dependencies, run the following command:
+To install necessary dependencies when running locally, run the following command:
 
 ```
 npm install
