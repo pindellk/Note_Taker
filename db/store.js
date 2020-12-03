@@ -28,7 +28,7 @@ exports.add = (req, res) => {
         let notes = JSON.parse(data);
         notes.push(newNote);
         return notes;
-    });
+    }, res);
 };
 
 // Delete a note
@@ -39,13 +39,13 @@ exports.delete = (req, res) => {
         let notes = JSON.parse(data);
         notes = notes.filter(note => note.id !== id);
         return notes;
-    });
+    }, res );
 }
 
 // Handle readFileAsync and writeFileAsync for writing and deleting
-const updateDb = (db, callback) => {
+const updateDb = (db, callback, res) => {
     readFileAsync(db, 'utf8')
         .then(callback)
-        .then(data => writeFileAsync(db, JSON.stringify(data)))
-        .catch(err => console.error(err));    
+        .then(data => { writeFileAsync(db, JSON.stringify(data)).then(() => res.json(JSON.stringify(data))) })
+        .catch(err => console.error(err));
 }
